@@ -5,7 +5,7 @@ use App\Http\Controllers\TimeSchemaMakeController;
 use App\Http\Controllers\TimeSchemaVisorController;
 use App\Http\Controllers\TimeSchemaUserController;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,8 +30,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+Route::post('/create-new-time-schema-user', function(Request $request) {
+    dd($request);
+});//[TimeSchemaUserController::class, 'createUser']);
 Route::get('/create-new-user', [TimeSchemaUserController::class, 'create'])->name('create-new-time-schema-user');
+
 
 Route::get('create-time-schema', [TimeSchemaVisorController::class, 'create'])->name('create-time-schema');
 Route::get('update-time-schema/{id}', [TimeSchemaVisorController::class, 'update'])->name('update-time-schema');

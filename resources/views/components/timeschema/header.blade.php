@@ -1,3 +1,3 @@
-header
-<x-timeschema.top-menu />
-<hr>
+<header>
+	<x-top-menu :$id />
+</header>

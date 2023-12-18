@@ -1,9 +1,10 @@
 <hr>
-<nav>
-    <ul>
-        <li>menu elem 1</li>
-        <li>menu elem 2</li>
-        <li>menu elem 3</li>
-    </ul>
+<div>
+    привет, {{ $name }} !
+</div>
+<nav>    
+    <div><a href='#'>Главная</a></div>
+    <div><a href='#'>Админка</a></div>
+    <div><a href='#'>Расписание</a></div>
 </nav>
 <hr>

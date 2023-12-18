@@ -1,2 +1,5 @@
 <hr>
-footer
+<footer>
+	footer	
+</footer>
+<hr>

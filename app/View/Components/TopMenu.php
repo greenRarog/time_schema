@@ -5,15 +5,18 @@ namespace App\View\Components;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use App\Models\User;
 
 class TopMenu extends Component
-{
+{    
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public $id;
+
+    public function __construct($id = 0)
     {
-        //
+        $this->id = $id;
     }
 
     /**
@@ -21,6 +24,14 @@ class TopMenu extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.top-menu');
+        if ($this->id) {
+            $user = User::find($this->id);
+            $name = $user->name;
+
+            return view('components.timeschema.top-menu', [
+                'name' => $name,
+            ]);
+        }
+        return view('components.timeschema.top-menu-not-auth');        
     }
 }
