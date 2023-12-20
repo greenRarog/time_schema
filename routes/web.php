@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TimeSchemaMakeController;
 use App\Http\Controllers\TimeSchemaVisorController;
 use App\Http\Controllers\TimeSchemaUserController;
+use App\Http\Controllers\TimeTableViewController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 /*
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/main', [TimeSchemaVisorController::class, 'main'])->name('main-page');
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,3 +45,7 @@ Route::post('api/create-time-schema', [TimeSchemaMakeController::class, 'create'
 Route::post('api/update-time-schema', [TimeSchemaMakeController::class, 'update']);
 
 require __DIR__.'/auth.php';
+
+Route::middleware('auth')->group(function () {
+    Route::get('/timetable/{id}', [TimeTableViewController::class, 'timetable'])->name('timetable');
+});

@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('single_events', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->integer('admin_id');
             $table->integer('user_id');
             $table->date('date');
             $table->time('time_start');
             $table->integer('duration');
+            $table->boolean('paid')->default(false);
+            $table->enum('complite', ['complite', 'not_complite', 'canceled'])->default('not_complite');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('single_events');
+        Schema::dropIfExists('events');
     }
 };

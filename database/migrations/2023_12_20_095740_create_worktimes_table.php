@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('past_days', function (Blueprint $table) {
+        Schema::create('worktimes', function (Blueprint $table) {
             $table->id();
             $table->integer('admin_id');
-            $table->integer('user_id');
-            $table->date('date');
-            $table->time('time_start');
-            $table->integer('duration');
-            $table->boolean('paid');
+            $table->string('start');
+            $table->string('end');            
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('past_days');
+        Schema::dropIfExists('worktimes');
     }
 };
