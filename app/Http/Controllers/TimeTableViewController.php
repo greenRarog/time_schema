@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\EventModel;
 use Illuminate\Http\Request;
@@ -52,68 +53,59 @@ class TimeTableViewController extends Controller
         $events = (new EventModel)
             ->where('admin_id', '=', $routeId)
             ->get();
-        $date = '2024-01-03';
-        dd($this->createHead($this->getMondayDate($date)));
+        $date = '2024-01-03';   
+        $table = $this->createTable($worktime, $this->createHead($date));
+        $table = $this->addEvents($table, $events);
+        //dd($events->first()->hourMinutes());
+        //dd($this->addEvents($table, $events));
         return view('timeschema.timetable', [
             'id'             => $id,
             'events'         => $events,
             'worktime'       => $worktime,            
-            'table'          => $this->createTable($worktime, $head),
+            'table'          => $table,
         ]);
+    } 
+
+    private function addEvents($table, $events)
+    {
+            return $table['head'] . $table['body'];
     }
 
-
-    private function createHead($monday_date)
+    private function createHead($date)
     {
-        return $monday_date;
-    }
-
-    private function getMondayDate($date)
-    {
-        $year = substr($date, 0, 4);
-        $month = substr($date, 5, 2);
-        $day = substr($date, 8, 2);
-        $weekDay = date('w', mktime(0, 0, 0, $month, $day, $year));
-
-        
-        if ($weekDay == 1) {
-            return ['year' => $year, 'month' => $month, 'day' => $day];
-
-        } elseif ($weekDay < 1 && $day >= 2) {
-            return ['year' => $year, 'month' => $month, 'day' => $this->addZiro($day - 1)];
-
-        } elseif ($weekDay < 1) {
-
-            if ($month != '12') {
-                $resultMonth = $this->addZiro($month - 1);
-                $resultDay = $MONTH_DAYS[$resultMonth];
-                if ( $month == '02' && $this->isLeap($year) ) {
-                    $resultMonth = '02';
-                    $resultDay = '29';
-                } elseif ( $month == '02' && !$this->isLeap($year) ) {
-                    $resultMonth = '02';
-                    $resultDay = '28';
-                }
-                return ['year' => $year, 'month' => $resultMonth, 'day' => $resultDay];
-            }
-
-            return ['year' => $year - 1, 'month' => '12', 'day' => 'DADADA'];
+        $monday = (Carbon::parse($date))->startOfWeek()->format('Y-m-d');
+        $dateFromMonday = Carbon::parse($monday);
+        $dataArray = [
+          $dateFromMonday->format('d.m'),
+          $dateFromMonday->next('Tuesday')->format('d.m'),
+          $dateFromMonday->next('Wednesday')->format('d.m'),
+          $dateFromMonday->next('Thursday')->format('d.m'),
+          $dateFromMonday->next('Friday')->format('d.m'),
+          $dateFromMonday->next('Saturday')->format('d.m'),
+          $dateFromMonday->next('Sunday')->format('d.m'),
+        ];
+        $result = '<table><thead><tr><td></td>';
+        foreach ($dataArray as $weekDay) {
+            $result .= "<td><span class='border'>" . $weekDay . '</span></td>';
         }
-
+        $result .= '</tr>';
+        return [ 'head' => $result, 'days' => $dataArray];
     }
 
     private function createTable($worktime, $head)
     {
-        $table = "<table><thead><tr><td><span class='border'>Время</span></td><td><span class='border'>Понедельник</span></td><td><span class='border'>Вторник</span></td><td><span class='border'>Среда</span></td><td><span class='border'>Четверг</span></td><td><span class='border'>Пятница</span></td><td><span class='border'>Суббота</span></td><td><span class='border'>Воскресенье</span></td></tr></thead><tbody>";
+        $table['head'] = $head['head'];
+        $table['head'] .= "<tr><td><span class='border'>Время</span></td><td><span class='border'>Понедельник</span></td><td><span class='border'>Вторник</span></td><td><span class='border'>Среда</span></td><td><span class='border'>Четверг</span></td><td><span class='border'>Пятница</span></td><td><span class='border'>Суббота</span></td><td><span class='border'>Воскресенье</span></td></tr></thead><tbody>";
+        $table['body'] = '';
         $tableHours = $this->hoursToArray($worktime->start, $worktime->end);
         foreach ($tableHours as $hour) {
-            $table .= "<tr><td><span class='border'>" . $hour . "</span></td>";
+            $table['body'] .= "<tr data-time='" . $hour . "'><td><span class='border'>" . $hour . "</span></td>";
             for ($i = 0; $i < 7; $i++) {
-                $table .= '<td></td>';
+                $table['body'] .= "<td data-date='" . $head['days'][$i] . "'></td>";
             }
-            $table .= '</tr>';
+            $table['body'] .= '</tr>';
         }
-        $table .= '</tbody></table>';
+        $table['body'] .= '</tbody></table>';
         return $table;
     }
 
