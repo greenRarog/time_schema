@@ -10,6 +10,14 @@
 	{!! $table !!}
 
 
-	<br><br>
-	{{ $table }}
+<script>
+	let buttons = document.querySelectorAll('button.add-user');
+
+	for (let button of buttons)	{
+		button.addEventListener('click', function() {
+			console.log('111');
+		});
+	}	
+
+</script>
 </x-timeschema.layout>

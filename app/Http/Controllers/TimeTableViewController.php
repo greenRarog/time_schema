@@ -10,21 +10,6 @@ use Illuminate\Support\Facades\Auth;
 
 class TimeTableViewController extends Controller
 {
-
-    protected $MONTH_DAYS = [
-        '01' => '31',
-        '02' => '28',
-        '03' => '31',
-        '04' => '30',
-        '05' => '31',
-        '06' => '30',
-        '07' => '31',
-        '08' => '31',
-        '09' => '30',
-        '10' => '31',
-        '11' => '30',
-        '12' => '31',
-    ];
     protected $MONTH_NAMES = [
         '01' => 'Январь',
         '02' => 'Февраль',
@@ -40,36 +25,64 @@ class TimeTableViewController extends Controller
         '12' => 'Декабрь',
     ];
 
-    public function timetable($id)    
+    public function timetable(Request $request, $id)    
     {
         $routeId = $id;
-        if (Auth::check()) {
-            $id =  Auth::id();
-        } else {
-            $id = '';
-        }  
         $admin = User::find($routeId);
-        $worktime = $admin->worktimes->first();
-        $events = (new EventModel)
-            ->where('admin_id', '=', $routeId)
-            ->get();
-        $date = '2024-01-03';   
-        $table = $this->createTable($worktime, $this->createHead($date));
-        $table = $this->addEvents($table, $events);
-        //dd($events->first()->hourMinutes());
-        //dd($this->addEvents($table, $events));
-        return view('timeschema.timetable', [
-            'id'             => $id,
-            'events'         => $events,
-            'worktime'       => $worktime,            
-            'table'          => $table,
-        ]);
+        if (isset($admin)) {
+            if (Auth::check()) {
+                $id =  Auth::id();
+            } else {
+                $id = '';
+            }  
+            $worktime = $admin->worktimes->first();        
+            if ($request->has('year') && $request->has('month') && $request->has("day")) {
+                $date = $request->year . '-' . $request->month . '-' . $request->day;
+            } else {
+                $date = Carbon::now()->format('Y-m-d');
+            }
+            if ($id != '') {
+                $fillEmptyTd = "<button class='add-user'><span class='border'> + </span></button>";
+            } else {
+                $fillEmptyTd = " ";
+            }
+
+
+            $monday = Carbon::parse($date)->startOfWeek()->format('Y-m-d');
+            $sunday = Carbon::parse($monday)->next('Sunday')->format('Y-m-d');
+            $events = EventModel::where('admin_id', '=', $routeId)
+                ->where('date', '>=', $monday)
+                ->where('date', '<=', $sunday)
+                ->get();        
+            return view('timeschema.timetable', [
+                'id'             => $id,
+                'table'          => $this->createTable($worktime, $date, $events, $fillEmptyTd),
+            ]);            
+        }
+        return redirect(route('main-page'));
     } 
 
-    private function addEvents($table, $events)
-    {
-            return $table['head'] . $table['body'];
-    }
+    private function createTable($worktime, $date, $events, $fillEmptyTd)
+    {        
+        $head = $this->createHead($date);
+        $table['head'] = $head['head'];    
+        $tableHours = $this->hoursToArray($worktime->start, $worktime->end);
+            
+        $table['body'] = '';        
+        foreach ($tableHours as $hour) {
+            $table['body'] .= "<tr data-time='" . $hour . "'><td><span class='border'>" . $hour . "</span></td>";
+            for ($i = 0; $i < 7; $i++) {
+                $table['body'] .= "<td data-date='" . $head['days'][$i] . "' data-time='" . $hour . "'>" . $fillEmptyTd . "</td>";
+            }
+            $table['body'] .= '</tr>';
+        }
+        $table['body'] .= '</tbody></table>';
+
+        foreach ($events as $event) {            
+            $table['body'] = $this->addEvent($event, $table['body'], $fillEmptyTd);
+        }
+        return ($table['head'] . $table['body']);
+    }     
 
     private function createHead($date)
     {
@@ -88,25 +101,21 @@ class TimeTableViewController extends Controller
         foreach ($dataArray as $weekDay) {
             $result .= "<td><span class='border'>" . $weekDay . '</span></td>';
         }
-        $result .= '</tr>';
+        $result .= "</tr><tr><td><span class='border'>Время</span></td><td><span class='border'>Понедельник</span></td><td><span class='border'>Вторник</span></td><td><span class='border'>Среда</span></td><td><span class='border'>Четверг</span></td><td><span class='border'>Пятница</span></td><td><span class='border'>Суббота</span></td><td><span class='border'>Воскресенье</span></td></tr></thead><tbody>";
         return [ 'head' => $result, 'days' => $dataArray];
     }
 
-    private function createTable($worktime, $head)
+    private function addEvent($event, $body, $fillEmptyTd)
     {
-        $table['head'] = $head['head'];
-        $table['head'] .= "<tr><td><span class='border'>Время</span></td><td><span class='border'>Понедельник</span></td><td><span class='border'>Вторник</span></td><td><span class='border'>Среда</span></td><td><span class='border'>Четверг</span></td><td><span class='border'>Пятница</span></td><td><span class='border'>Суббота</span></td><td><span class='border'>Воскресенье</span></td></tr></thead><tbody>";
-        $table['body'] = '';
-        $tableHours = $this->hoursToArray($worktime->start, $worktime->end);
-        foreach ($tableHours as $hour) {
-            $table['body'] .= "<tr data-time='" . $hour . "'><td><span class='border'>" . $hour . "</span></td>";
-            for ($i = 0; $i < 7; $i++) {
-                $table['body'] .= "<td data-date='" . $head['days'][$i] . "'></td>";
-            }
-            $table['body'] .= '</tr>';
-        }
-        $table['body'] .= '</tbody></table>';
-        return $table;
+        $search = "<td data-date='" . $event->dayMonth() . "' data-time='" . $event->hourMinutes() 
+            . "'>" . $fillEmptyTd 
+            . "</td>";
+
+        $change = "<td data-date='" . $event->dayMonth() . "' data-time='" . $event->hourMinutes() 
+            . "' data-id-user='" . $event->user_id . "'><span class='border'>" . $event->user->name 
+            . "</span></td>";
+
+        return str_replace($search, $change, $body);
     }
 
     private function hoursToArray($start, $end)
@@ -115,12 +124,7 @@ class TimeTableViewController extends Controller
         $end_hour = substr($end, 0, 2);
         $result = [];    
         for ($i = $start_hour; $i <= $end_hour; $i++) {
-            if (strlen($i) === 1) {
-                $time = '0' . $i . ':00';
-            } else {
-                $time = $i . ':00';
-            }
-            $result[] = $time;
+            $result[] = $this->addZiro($i) . ':00';
         }
         return $result;
     }
@@ -131,12 +135,5 @@ class TimeTableViewController extends Controller
             return '0' . $number;
         }
         return $number;
-    }
-
-    private function isLeap($year) {
-        if ( ($year % 4 == 0) && ($year % 100 != 0) ) {
-            return true;
-        }
-        return false;
     }
 }

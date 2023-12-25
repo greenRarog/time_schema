@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use App\Models\User;
 
 class EventModel extends Model
 {
@@ -13,6 +14,11 @@ class EventModel extends Model
     use SoftDeletes;
 
     protected $table = 'events';    
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function dayMonth()
     {
