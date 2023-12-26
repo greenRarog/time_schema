@@ -10,64 +10,46 @@ use Illuminate\Support\Facades\Auth;
 
 class TimeTableViewController extends Controller
 {
-    protected $MONTH_NAMES = [
-        '01' => 'Январь',
-        '02' => 'Февраль',
-        '03' => 'Март',
-        '04' => 'Апрель',
-        '05' => 'Май',
-        '06' => 'Июнь',
-        '07' => 'Июль',
-        '08' => 'Август',
-        '09' => 'Сентябрь',
-        '10' => 'Октябрь',
-        '11' => 'Ноябрь',
-        '12' => 'Декабрь',
-    ];
-
     public function timetable(Request $request, $id)    
     {
-        $routeId = $id;
-        $admin = User::find($routeId);
+        $adminId = $id;
+        $admin = User::find($adminId);
         if (isset($admin)) {
             if (Auth::check()) {
-                $id =  Auth::id();
+                $id =  Auth::id();                
             } else {
-                $id = '';
-            }  
-            $worktime = $admin->worktimes->first();        
-            if ($request->has('year') && $request->has('month') && $request->has("day")) {
-                $date = $request->year . '-' . $request->month . '-' . $request->day;
+                $id = '';                
+            }
+            if ($request->has('date')) {
+                $date = $request->date;
             } else {
                 $date = Carbon::now()->format('Y-m-d');
             }
-            if ($id != '') {
-                $fillEmptyTd = "<button class='add-user'><span class='border'> + </span></button>";
-            } else {
-                $fillEmptyTd = " ";
-            }
-
-
-            $monday = Carbon::parse($date)->startOfWeek()->format('Y-m-d');
-            $sunday = Carbon::parse($monday)->next('Sunday')->format('Y-m-d');
-            $events = EventModel::where('admin_id', '=', $routeId)
-                ->where('date', '>=', $monday)
-                ->where('date', '<=', $sunday)
-                ->get();        
             return view('timeschema.timetable', [
-                'id'             => $id,
-                'table'          => $this->createTable($worktime, $date, $events, $fillEmptyTd),
+                'id'        => $id,
+                'weekTable' => $this->createTable($admin, $date, $id),
             ]);            
         }
         return redirect(route('main-page'));
     } 
 
-    private function createTable($worktime, $date, $events, $fillEmptyTd)
-    {        
-        $head = $this->createHead($date);
+    public function createTable($admin, $date, $id)
+    {
+        if ($id != '') {
+            $fillEmptyTd = "<button class='add-user'><span class='border'> + </span></button>";
+        } else {
+            $fillEmptyTd = " ";
+        }
+        $worktime = $admin->worktimes->first();
+        $monday = Carbon::parse($date)->startOfWeek()->format('Y-m-d');
+        $sunday = Carbon::parse($monday)->next('Sunday')->format('Y-m-d');
+        $events = EventModel::where('admin_id', '=', $admin->id)
+            ->where('date', '>=', $monday)
+            ->where('date', '<=', $sunday)
+            ->get();
+        $head = $this->createHead($date, $admin->id, $id);
         $table['head'] = $head['head'];    
-        $tableHours = $this->hoursToArray($worktime->start, $worktime->end);
-            
+        $tableHours = $this->hoursToArray($worktime->start, $worktime->end);            
         $table['body'] = '';        
         foreach ($tableHours as $hour) {
             $table['body'] .= "<tr data-time='" . $hour . "'><td><span class='border'>" . $hour . "</span></td>";
@@ -76,15 +58,14 @@ class TimeTableViewController extends Controller
             }
             $table['body'] .= '</tr>';
         }
-        $table['body'] .= '</tbody></table>';
-
+        $table['body'] .= '</tbody></table>';        
         foreach ($events as $event) {            
             $table['body'] = $this->addEvent($event, $table['body'], $fillEmptyTd);
         }
         return ($table['head'] . $table['body']);
     }     
 
-    private function createHead($date)
+    private function createHead($date, $adminId, $userId)
     {
         $monday = (Carbon::parse($date))->startOfWeek()->format('Y-m-d');
         $dateFromMonday = Carbon::parse($monday);
@@ -97,21 +78,35 @@ class TimeTableViewController extends Controller
           $dateFromMonday->next('Saturday')->format('d.m'),
           $dateFromMonday->next('Sunday')->format('d.m'),
         ];
-        $result = '<table><thead><tr><td></td>';
+
+        $monday = (Carbon::parse($date))->startOfWeek()->format('Y-m-d');
+        $dateFromMonday = Carbon::parse($monday);
+        $dataArrayForBody = [
+          $dateFromMonday->format('d.m.Y'),
+          $dateFromMonday->next('Tuesday')->format('d.m.Y'),
+          $dateFromMonday->next('Wednesday')->format('d.m.Y'),
+          $dateFromMonday->next('Thursday')->format('d.m.Y'),
+          $dateFromMonday->next('Friday')->format('d.m.Y'),
+          $dateFromMonday->next('Saturday')->format('d.m.Y'),
+          $dateFromMonday->next('Sunday')->format('d.m.Y'),
+        ];
+        $dateForTable = (Carbon::parse($date))->isToday() ? 'today' : $date;
+        // $result = "<table data-date='" . $dateForTable . "' class='week-table'><input class='admin-id' name='admin-id' value='" . $adminId . "' ><input hidden class='user-id' value='" . $userId .  "' name='user-id'><thead><tr><td></td>";
+        $result = "<table data-date='" . $dateForTable . "' data-admin-id='" . $adminId . "' data-user-id='" . $userId .  "' class='week-table'><thead><tr><td></td>";
         foreach ($dataArray as $weekDay) {
             $result .= "<td><span class='border'>" . $weekDay . '</span></td>';
         }
         $result .= "</tr><tr><td><span class='border'>Время</span></td><td><span class='border'>Понедельник</span></td><td><span class='border'>Вторник</span></td><td><span class='border'>Среда</span></td><td><span class='border'>Четверг</span></td><td><span class='border'>Пятница</span></td><td><span class='border'>Суббота</span></td><td><span class='border'>Воскресенье</span></td></tr></thead><tbody>";
-        return [ 'head' => $result, 'days' => $dataArray];
+        return [ 'head' => $result, 'days' => $dataArrayForBody];
     }
 
     private function addEvent($event, $body, $fillEmptyTd)
     {
-        $search = "<td data-date='" . $event->dayMonth() . "' data-time='" . $event->hourMinutes() 
+        $search = "<td data-date='" . $event->dayMonthYear() . "' data-time='" . $event->hourMinutes() 
             . "'>" . $fillEmptyTd 
             . "</td>";
 
-        $change = "<td data-date='" . $event->dayMonth() . "' data-time='" . $event->hourMinutes() 
+        $change = "<td data-date='" . $event->dayMonthYear() . "' data-time='" . $event->hourMinutes() 
             . "' data-id-user='" . $event->user_id . "'><span class='border'>" . $event->user->name 
             . "</span></td>";
 

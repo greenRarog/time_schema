@@ -5,6 +5,7 @@ use App\Http\Controllers\TimeSchemaMakeController;
 use App\Http\Controllers\TimeSchemaVisorController;
 use App\Http\Controllers\TimeSchemaUserController;
 use App\Http\Controllers\TimeTableViewController;
+use App\Http\Controllers\TimeTableApiController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 /*
@@ -17,6 +18,9 @@ use Illuminate\Http\Request;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::post('/api/add-reservation', [TimeTableApiController::class, 'addReservation']);
+Route::get('/api/get-table', [TimeTableApiController::class, 'getTable']);
+
 Route::get('/main', [TimeSchemaVisorController::class, 'main'])->name('main-page');
 
 Route::get('/', function () {

@@ -25,6 +25,11 @@ class EventModel extends Model
         $carbon = Carbon::parse($this->date);
         return $carbon->format('d.m');        
     }    
+    public function dayMonthYear()
+    {
+        $carbon = Carbon::parse($this->date);
+        return $carbon->format('d.m.Y');        
+    }
     public function hourMinutes()
     {        
         return substr($this->time_start, 0, 5);
