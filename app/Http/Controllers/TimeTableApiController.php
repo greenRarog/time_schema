@@ -24,7 +24,7 @@ class TimeTableApiController extends Controller
         $event->date = $date;
         $event->time_start = $time;
         $event->duration = 3600;
-        $event->save();
+        //$event->save();
 
         return json_encode([
             'status' => 'ok', 
@@ -41,11 +41,23 @@ class TimeTableApiController extends Controller
         } else {
             $date = $_GET['date'];
         }
-        $weekTable = (new TimeTableViewController)->createTable($admin, $date, $_GET['userId']);
+        switch ($_GET['typeTable']) {
+            case 'week':
+                $table = (new TimeTableViewController)->createWeekTable($admin, $date, $_GET['userId']);
+                break;
+            case 'day':
+                $table = (new TimeTableViewController)->createDayTable($admin, $date, $_GET['userId']);
+                break;
+        }
+
+        
         return json_encode([
             'status' => 'ok',
-            'table'  => $weekTable,
+            'table'  => $table,
         ]);
+    }
 
+    public function test(AddReservationRequest $request) {
+        return $request->validated();
     }
 }

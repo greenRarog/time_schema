@@ -52,4 +52,5 @@ require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {
     Route::get('/timetable/{id}', [TimeTableViewController::class, 'timetable'])->name('timetable');
+    Route::get('/day/{id}', [TimeTableViewController::class, 'day'])->name('day');
 });
