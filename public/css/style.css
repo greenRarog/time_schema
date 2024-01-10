@@ -120,3 +120,11 @@
             .border {
                 font-weight: bold;
             }
+            .h1 {
+                font-size: 1.6em;
+                color: lightcoral;
+            }
+            .h2 {
+                font-size: 1.2em;
+                color: lightpink;
+            }

@@ -9,3 +9,10 @@ php artisan db:seed --class=AdminSeeder
 email: "admin@admin.com"
 passwork: 'admin'
 
+# start
+```
+npm run dev
+```
+```
+php artisan serve
+```

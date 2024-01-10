@@ -6,6 +6,7 @@ use App\Http\Controllers\TimeSchemaVisorController;
 use App\Http\Controllers\TimeSchemaUserController;
 use App\Http\Controllers\TimeTableViewController;
 use App\Http\Controllers\TimeTableApiController;
+use App\Http\Controllers\AdminViewController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 /*
@@ -53,4 +54,6 @@ require __DIR__.'/auth.php';
 Route::middleware('auth')->group(function () {
     Route::get('/timetable/{id}', [TimeTableViewController::class, 'timetable'])->name('timetable');
     Route::get('/day/{id}', [TimeTableViewController::class, 'day'])->name('day');
+
+    Route::get('/admin', [AdminViewController::class, 'adminPanel'])->name('adminPanel');
 });
