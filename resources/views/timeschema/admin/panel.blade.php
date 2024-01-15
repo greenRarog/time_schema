@@ -67,7 +67,7 @@
 	  		<input type='submit'>
 		</form>
 	</div>
-
+	<br><br><br>
 	<div>
 		<span class='h1'>Установка рабочих часов</span>
 		<form method="POST" action='{{ env('APP_ULR') . '/update-worktimes' }}'>
@@ -79,7 +79,7 @@
 			<input type='submit'>
 		</form>
 	</div>
-
+	<br><br><br>
 	<div>
 		<span class='h1'>Редактирование информационной страницы</span>
 		<form method="POST" action='{{ env('APP_ULR') . '/update-mainpage' }}'>

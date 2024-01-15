@@ -7,6 +7,8 @@ use App\Http\Controllers\TimeSchemaUserController;
 use App\Http\Controllers\TimeTableViewController;
 use App\Http\Controllers\TimeTableApiController;
 use App\Http\Controllers\AdminViewController;
+use App\Http\Controllers\MainPageViewController;
+use App\Http\Controllers\TryTestController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 /*
@@ -19,10 +21,18 @@ use Illuminate\Http\Request;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/try-test', [TryTestController::class, 'index'])->name('try-test');
+
+
+
 Route::post('/api/add-reservation', [TimeTableApiController::class, 'addReservation']);
 Route::get('/api/get-table', [TimeTableApiController::class, 'getTable']);
 
-Route::get('/main', [TimeSchemaVisorController::class, 'main'])->name('main-page');
+
+Route::get('/info-page/about-project', [MainPageViewController::class, 'view'])->name('main-page');
+Route::get('/info-page/{admin_name}', [MainPageViewController::class, 'view'])->name('info-page');
+
 
 Route::get('/', function () {
     return view('welcome');

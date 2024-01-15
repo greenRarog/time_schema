@@ -5,6 +5,7 @@ namespace App\View\Components;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use Illuminate\Http\Request;
 use App\Models\User;
 
 class TopMenu extends Component
@@ -13,10 +14,12 @@ class TopMenu extends Component
      * Create a new component instance.
      */
     public $id;
+    private $urlPath;
 
-    public function __construct($id = 0)
+    public function __construct(Request $request, $id = 0)
     {
-        $this->id = $id;
+        $this->id = $id;        
+        $this->urlPath = $request->path();
     }
 
     /**
@@ -26,12 +29,14 @@ class TopMenu extends Component
     {
         if ($this->id) {
             $user = User::find($this->id);
-            $name = $user->name;
-
-            return view('components.timeschema.top-menu', [
+            $name = $user->name;            
+            return view('components.template.top-menu', [
                 'name' => $name,
             ]);
         }
-        return view('components.timeschema.top-menu-not-auth');        
+        $uri = '/' . $this->urlPath;
+        return view('components.template.top-menu-not-auth', [
+                'uri' => $uri,
+            ]);        
     }
 }

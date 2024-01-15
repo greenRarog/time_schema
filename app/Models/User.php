@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Worktime;
+use App\Models\InfoPage;
 
 class User extends Authenticatable
 {
@@ -47,5 +48,10 @@ class User extends Authenticatable
     public function worktimes()
     {
         return $this->hasMany(Worktime::class, 'admin_id');
+    }
+
+    public function infoPage()
+    {
+        return $this->belongsTo(InfoPage::class, 'id', 'admin_id');
     }
 }

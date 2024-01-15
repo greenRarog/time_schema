@@ -24,16 +24,4 @@ class TimeSchemaVisorController extends Controller
         return redirect('/');
     }
 
-
-    public function main()
-    {
-        if (Auth::check()) {
-            $id =  Auth::id();
-        } else {
-            $id = '';
-        }
-        return view('timeschema.main', [
-            'id' => $id,
-        ]);
-    }
 }
