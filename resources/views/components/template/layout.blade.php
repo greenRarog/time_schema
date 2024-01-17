@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="{{ env('APP_URL') . '/css/template-style.css' }}" rel="stylesheet" type="text/css" />
+    <link href="{{ env('APP_URL') . '/css/style.css' }}" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="{{ env('APP_URL') . '/js/template-js/cufon-yui.js' }}"></script>
     <script type="text/javascript" src="{{ env('APP_URL') . '/js/template-js/arial.js' }}"></script>
     <script type="text/javascript" src="{{ env('APP_URL') . '/js/template-js/cuf_run.js' }}"></script>

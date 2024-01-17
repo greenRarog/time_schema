@@ -12,7 +12,7 @@ class AdminViewController extends Controller
         $id =  Auth::id();
         $worktime = Worktime::where('admin_id', '=', $id)->first();        
         
-        return view('timeschema.admin.panel', [
+        return view('template.admin-panel', [
             'id' => $id,
             'worktime' => $worktime,
         ]);

@@ -25,7 +25,7 @@ class TimeTableViewController extends Controller
             } else {
                 $date = Carbon::now()->format('Y-m-d');
             }
-            return view('timeschema.timetable', [
+            return view('template.timetable', [
                 'id'        => $id,
                 'weekTable' => $this->createWeekTable($admin, $date, $id),
                 'dayTable'  => $this->createDayTable($admin, $date, $id),
@@ -91,6 +91,7 @@ class TimeTableViewController extends Controller
         return $head . $body;
     }
 
+    // надо сделать метод для dataArray и dataArrayForBody
     private function createWeekTableHead($date, $adminId, $userId)
     {
         $monday = (Carbon::parse($date))->startOfWeek()->format('Y-m-d');

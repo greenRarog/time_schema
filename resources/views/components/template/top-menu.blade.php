@@ -4,8 +4,8 @@
             <a href="{{ route('try-test') }}">try test</a>
         </li>
 
-        <li class="{{{ route('info-page', ['id' => $id]) === env('APP_URL') . $uri ? 'active' : '' }}}">
-            <a href="{{ route('info-page', ['id' => $id]) }}">Расписание</a>
+        <li class="{{{ route('info-page', ['admin_name' => $name]) === env('APP_URL') . $uri ? 'active' : '' }}}">
+            <a href="{{ route('info-page', ['admin_name' => $name]) }}">Расписание</a>
         </li>
 
         <li class="{{{ route('timetable', ['id' => $id]) === env('APP_URL') . $uri ? 'active' : '' }}}">

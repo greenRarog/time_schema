@@ -27,14 +27,15 @@ class TopMenu extends Component
      */
     public function render(): View|Closure|string
     {
+        $uri = '/' . $this->urlPath;
         if ($this->id) {
             $user = User::find($this->id);
             $name = $user->name;            
             return view('components.template.top-menu', [
                 'name' => $name,
+                'uri' => $uri,
             ]);
-        }
-        $uri = '/' . $this->urlPath;
+        }        
         return view('components.template.top-menu-not-auth', [
                 'uri' => $uri,
             ]);        
