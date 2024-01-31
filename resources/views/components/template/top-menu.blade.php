@@ -18,6 +18,12 @@
 
         <li class="{{{ route('main-page') === env('APP_URL') . $uri ? 'active' : '' }}}">
             <a href="{{ route('main-page') }}">О проекте</a>
-        </li>    
+        </li>
+        <li>            
+            <form method="POST" action="{{ route('logout') }}">
+            @csrf
+                <input type='submit' value='Выйти'>
+            </form>
+        </li>
     </ul>
 </div>
