@@ -5,7 +5,7 @@
         </li>
 
         <li class="{{{ route('info-page', ['admin_name' => $name]) === env('APP_URL') . $uri ? 'active' : '' }}}">
-            <a href="{{ route('info-page', ['admin_name' => $name]) }}">Расписание</a>
+            <a href="{{ route('info-page', ['admin_name' => $name]) }}">Информационная страница администратора</a>
         </li>
 
         <li class="{{{ route('timetable', ['id' => $id]) === env('APP_URL') . $uri ? 'active' : '' }}}">

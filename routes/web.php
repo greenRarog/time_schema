@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\InfoPageStoreController;
+
 use App\Http\Controllers\TimeSchemaMakeController;
 use App\Http\Controllers\TimeSchemaVisorController;
 use App\Http\Controllers\TimeSchemaUserController;
@@ -9,6 +11,7 @@ use App\Http\Controllers\TimeTableApiController;
 use App\Http\Controllers\AdminViewController;
 use App\Http\Controllers\MainPageViewController;
 use App\Http\Controllers\TryTestController;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 /*
@@ -47,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
 Route::post('/create-new-time-schema-user', function(Request $request) {
     dd($request);
 });//[TimeSchemaUserController::class, 'createUser']);
@@ -65,4 +70,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/timetable/{id}', [TimeTableViewController::class, 'timetable'])->name('timetable');
 
     Route::get('/admin', [AdminViewController::class, 'adminPanel'])->name('adminPanel');
+    Route::post('/update-mainpage', [InfoPageStoreController::class, 'store'])->name('storeInfoPage');
 });

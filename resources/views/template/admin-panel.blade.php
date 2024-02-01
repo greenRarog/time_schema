@@ -85,22 +85,10 @@
 						<input type='submit'>
 					</form>
 				</div>
+				<x-template.admin.infopage>
+					{{ $infopage }}
+				</x-template.admin.infopage>
 
-				<div class='article'>
-					<h2>Редактирование информационной страницы</h2>
-					<div class="clr"></div> 
-					<form method="POST" action='{{ env('APP_ULR') . '/update-mainpage' }}'>
-						@csrf
-						<span class='h2'>seo</span></br>
-						<label>title: </label></br>
-						<label>description: </label></br>
-						<span class='h2'>содержание</span></br>
-						<label>Заголовок: </label></br>
-						<label>Вид деятельности: </label></br>
-						<label>Фотография: </label></br>
-						<label>Описание: </label></br>			
-					</form>
-				</div>
 			</div>
 			<div class="clr"></div> 
 			<div class="sidebar"></div>
