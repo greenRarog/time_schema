@@ -13,7 +13,7 @@ class AdminViewController extends Controller
         $id =  Auth::id();
         $worktime = Worktime::where('admin_id', '=', $id)->first();        
         $infoPage = InfoPage::where('admin_id', '=', $id)->first();
-
+        
 
         return view('template.admin-panel', [
             'id' => $id,
