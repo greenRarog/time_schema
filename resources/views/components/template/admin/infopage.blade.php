@@ -40,7 +40,7 @@
 				($description != '') ? $description : 'Не задан'
 			}}">
 		</div>			
-		<button class='infopage-button-for-change'>Начать редактировать</button>
+		<button class='infopage-button-for-change'>Редактировать</button>
 		<input hidden class='infopage-input-submit' type="submit" value='Обновить'>
 	</form>
 </div>

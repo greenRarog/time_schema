@@ -1,14 +1,14 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\InfoPageStoreController;
+use App\Http\Controllers\AdminViewController;
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TimeSchemaMakeController;
 use App\Http\Controllers\TimeSchemaVisorController;
 use App\Http\Controllers\TimeSchemaUserController;
 use App\Http\Controllers\TimeTableViewController;
 use App\Http\Controllers\TimeTableApiController;
-use App\Http\Controllers\AdminViewController;
 use App\Http\Controllers\MainPageViewController;
 use App\Http\Controllers\TryTestController;
 
@@ -41,9 +41,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

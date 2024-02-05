@@ -1,9 +1,5 @@
 <div class="menu_nav">
     <ul>
-        <li class="{{{ route('try-test') === env('APP_URL') . $uri ? 'active' : '' }}}">
-            <a href="{{ route('try-test') }}">try test</a>
-        </li>
-
         <li class="{{{ route('login') === env('APP_URL') . $uri ? 'active' : '' }}}">
             <a href="{{ route('login') }}">Войти</a>
         </li>

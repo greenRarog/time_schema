@@ -1,9 +1,5 @@
 <div class="menu_nav">
     <ul>
-        <li class="{{{ route('try-test') === env('APP_URL') . $uri ? 'active' : '' }}}">
-            <a href="{{ route('try-test') }}">try test</a>
-        </li>
-
         <li class="{{{ route('info-page', ['admin_name' => $name]) === env('APP_URL') . $uri ? 'active' : '' }}}">
             <a href="{{ route('info-page', ['admin_name' => $name]) }}">Информационная страница администратора</a>
         </li>

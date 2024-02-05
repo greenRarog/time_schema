@@ -11,80 +11,22 @@
 			<div class="mainbar">
 
 				<div class='article'>
-					<h2>Добавление нового пользователя</h2>
+					<h2>Управление Пользователями</h2>
 					<div class="clr"></div> 
-					<form method="POST" action='{{ env('APP_ULR') . '/create-new-time-schema-user' }}'>
-						@csrf
-						<input hidden name='admin_id' value='{{ $id }}'>
-						<div>
-				  			<label for="name">Имя пользователя</label>
-				  			<input type="text" name="name">
-				  		</div>
-				  		<div>
-				  			<label for="pass">Пароль пользователя</label>
-				  			<input type="text" name="pass">
-				  		</div>
-
-				  		<div>
-				  			<h3>Интервал</h3>
-
-				  			<label for='period'>Каждый месяц: </label>
-				  			<input class='checkbox_month' type='checkbox' name='period[]' value='month'>  			
-				  			<div class='month-wrapper' hidden>
-				  				<label for='date'>Дата: </label>
-					  			<select name='month-date'>
-					  				<option value='01'>01</option>
-					  				<option value='02'>02</option>
-					  			</select>  				
-				  				<label for='month-time'>Время: </label>
-					  			<select name='month-time'>
-					  				<option value='00-00'>00-00</option>
-					  				<option value='01-00'>01-00</option>
-					  				<option value='02-00'>02-00</option>
-					  				<option value='03-00'>03-00</option>
-					  				<option value='04-00'>04-00</option>
-					  			</select>
-				  			</div>
-
-							<label for='period'>Каждую неделю: </label>
-				  			<input class='checkbox_week' type='checkbox' name='period[]' value='week'>  		
-				  			<div class='week-wrapper' hidden>
-				  				<label for='day'>День недели: </label>
-					  			<select name='week-day'>
-					  				<option value='1'>Понедельник</option>
-					  				<option value='2'>Вторник</option>
-					  				<option value='3'>Среда</option>
-					  				<option value='4'>Четверг</option>
-					  				<option value='5'>Пятница</option>
-					  				<option value='6'>Суббота</option>
-					  				<option value='0'>Воскресенье</option>
-					  			</select>
-				  				<label for='week-time'>Время: </label>
-					  			<select name='week-time'>
-					  				<option value='00-00'>00-00</option>
-					  				<option value='01-00'>01-00</option>
-					  				<option value='02-00'>02-00</option>
-					  				<option value='03-00'>03-00</option>
-					  				<option value='04-00'>04-00</option>
-					  			</select>
-					  		</div>
-				  		</div>
-				  		<input type='submit'>
-					</form>
+					<x-template.admin.new_client>
+						<x-slot:id>{{ $id }}</x-slot>
+					</x-template.admin.new_client>
 				</div>
 				
 				<div class='article'>
 					<h2>Установка рабочих часов</h2>
 					<div class="clr"></div> 
-					<form method="POST" action='{{ env('APP_ULR') . '/update-worktimes' }}'>
-						@csrf
-						<label for='time-start'>начало: </label>
-						<input name='time-start' value='{{ $worktime->start }}'></br>
-						<label for='time-end'>окончание: </label>
-						<input name='time-end' value='{{ $worktime->end }}'></br>	
-						<input type='submit'>
-					</form>
+					<x-template.admin.worktime>
+						<x-slot:worktime_start>{{ $worktime->start }}</x-slot:time_start>
+						<x-slot:worktime_end>{{ $worktime->end }}</x-slot:time_end>
+					</x-template.admin.worktime>
 				</div>
+				
 				<x-template.admin.infopage>
 					<x-slot:id>{{ $infopage->id }}</x-slot>
 					<x-slot:title>{{ $infopage->title }}</x-slot>
@@ -102,26 +44,5 @@
 			<div class="fbg"><div class="clr"></div></div>
 		</div>
 	</div>
-<script>
-	let week = document.querySelector('.week-wrapper');
-	let weekCheckbox = document.querySelector('.checkbox_week');
-	let month = document.querySelector('.month-wrapper');
-	let monthCheckbox = document.querySelector('.checkbox_month');
 
-	weekCheckbox.addEventListener('change', function () {
-		if (week.hasAttribute('hidden')) {
-			week.removeAttribute('hidden');
-		} else {
-			week.setAttribute('hidden', true);
-		}
-	});
-	monthCheckbox.addEventListener('change', function () {
-		if (month.hasAttribute('hidden')) {
-			month.removeAttribute('hidden');
-		} else {
-			month.setAttribute('hidden', true);
-		}
-	});
-
-</script>
 </x-template.layout>
