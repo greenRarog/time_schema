@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Models\Worktime;
 use App\Models\InfoPage;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -53,5 +54,23 @@ class User extends Authenticatable
     public function infoPage()
     {
         return $this->belongsTo(InfoPage::class, 'id', 'admin_id');
+    }
+
+    public function getIsAdminAttribute()
+    {
+        if ("{$this->role}" == 'admin') {
+            return true;
+        }
+        return false;
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'admin_user', 'admin_id', 'user_id');
+    }
+
+    public function admins()
+    {
+        return $this->belongsToMany(User::class, 'admin_user', 'user_id', 'admin_id');
     }
 }

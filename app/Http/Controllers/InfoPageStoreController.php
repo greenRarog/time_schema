@@ -9,7 +9,7 @@ class InfoPageStoreController extends Controller
 {
     public function store(StoreInfoPageRequest $request)
     {                
-        $infopage = InfoPage::find($request->infopage_id);        
+        $infopage = InfoPage::find($request->infopage_id);         
         foreach ($request->request as $key => $value) {
             if ($value != null 
                 && $key !== '_token' 
@@ -19,6 +19,7 @@ class InfoPageStoreController extends Controller
                 $infopage->$keyAttribute = $value;
             }            
         }        
+        dd($infopage);
         $infopage->save();
         return redirect(route('adminPanel'));
     }

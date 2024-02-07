@@ -30,10 +30,10 @@
 				<x-template.admin.infopage>
 					<x-slot:id>{{ $infopage->id }}</x-slot>
 					<x-slot:title>{{ $infopage->title }}</x-slot>
-					<x-slot:seo_description>{{ $infopage->seoDescription }}</x-slot>
+					<x-slot:seo_description>{{ $infopage->seo_description }}</x-slot>
 					<x-slot:header>{{ $infopage->header }}</x-slot>
-					<x-slot:activity_kind>{{ $infopage->activityKind }}</x-slot>
-					<x-slot:path_image>{{ $infopage->pathImage }}</x-slot>
+					<x-slot:activity_kind>{{ $infopage->activity_kind }}</x-slot>
+					<x-slot:path_image>{{ $infopage->path_image }}</x-slot>
 					<x-slot:description>{{ $infopage->description }}</x-slot>
 				</x-template.admin.infopage>
 

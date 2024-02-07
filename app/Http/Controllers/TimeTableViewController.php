@@ -14,6 +14,7 @@ class TimeTableViewController extends Controller
     {
         $adminId = $id;
         $admin = User::find($adminId);
+        $users = $admin->users;
         if (isset($admin)) {
             if (Auth::check()) {
                 $id =  Auth::id();                
@@ -27,6 +28,7 @@ class TimeTableViewController extends Controller
             }
             return view('template.timetable', [
                 'id'        => $id,
+                'users'     => $users,
                 'weekTable' => $this->createWeekTable($admin, $date, $id),
                 'dayTable'  => $this->createDayTable($admin, $date, $id),
             ]);            
