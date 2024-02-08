@@ -23,21 +23,36 @@
 			</div>
 			<div class='article'>
 				
-				<form class='form_add_reservation' action="POST" action='{{ env('APP_ULR') . '/api/add-reservation' }}'>
-					<div>
-						<label>клиент: </label>
-						<select class='users' name='users'>
-							@foreach($users as $user)
-								<option value="{{ $user->id }}">{{ $user->name }}</option>					
-							@endforeach
-						</select>
-					</div>
 
-					<div>
+<div id="popup-overlay">	
+	<div id="popup">    
+		<form class='popup_form_add_reservation' action="POST" action='{{ env('APP_ULR') . '/api/add-reservation' }}'>
+			@csrf
+			<input hidden name='admin_id'>
+			<div>
+				<label>Клиент: </label>
+				<select class='users' name='user_id'>
+					@foreach($users as $user)
+						<option value="{{ $user->id }}">{{ $user->name }}</option>					
+					@endforeach
+				</select>
+			</div>
 
-					</div>
-					<input type='submit' value='добавить'>
-				</form>				
+			<div>
+				<label>Дата: </label>
+				<input disabled name='date'>
+			</div>
+
+			<div>
+				<label>Время: </label>
+				<input disabled name='time'>
+			</div>
+						
+			<input type='submit' value='Добавить'>
+			<button type="button" onclick="hidePopup()">Закрыть окно</button>
+		</form>				
+	</div>
+</div>
 
 				<button class='test'>test</button>
 			</div>
@@ -49,7 +64,7 @@
 	</div>
 </div>
 
-<script>	
+<script>
 addEventsTable();
 function addEventsTable() {
 	let addUserButtons = document.querySelectorAll('button.week-add-user');
@@ -72,8 +87,8 @@ function refreshTable(typeTable) {
 	let userId = document.querySelector('table.week-table').getAttribute('data-user-id');		
 	let dateTable = document.querySelector('table.week-table').getAttribute('data-date');
 
-	let route = '/api/get-table?adminId='  + adminId +
-				'&userId=' + userId +
+	let route = '/api/get-table?admin_id='  + adminId +
+				'&user_id=' + userId +
 				'&date=' + dateTable +
 				'&typeTable=' + typeTable;
 	fetch(route).then(
@@ -91,6 +106,8 @@ function refreshTable(typeTable) {
 		});	
 }	
 
+let popupOverlay = document.getElementById("popup-overlay");
+let popup = document.getElementById("popup");
 function addReservation() {
 	let adminId = document.querySelector('table.week-table').getAttribute('data-admin-id');
 	let userId = document.querySelector('table.week-table').getAttribute('data-user-id');
@@ -98,21 +115,22 @@ function addReservation() {
 	let time = this.parentNode.getAttribute('data-time');
 	let td = this.parentNode;
 
-	if (adminId == userId) {
-		alert('go admin event');
-		// let formAddReservation = document.querySelector('form.form_add_reservation');
-		// formAddReservation.addEventListener('submit', function() {
-		// 	formAddReservation.set('adminId', adminId);		
-		// 	formAddReservation.set('date', date);
-		// 	formAddReservation.set('time', time);
-		// 	console.log(formAddReservation);			
-		// });
+	if (adminId == userId) {				
+		let popupForm = document.querySelector('form.popup_form_add_reservation');
+		let popupFormInputs = popupForm.elements;
 
+		let popupFormInputDate = popupFormInputs['date'];
+		popupFormInputDate.value = date;
+		let popupFormInputTime = popupFormInputs['time'];
+		popupFormInputTime.value = time;
+		let popupFormInputAdminId = popupFormInputs['admin_id'];
+		popupFormInputAdminId.value = adminId;
 
+		showPopup();
 	} else {		
 		let formData = new FormData();
-		formData.set('adminId', adminId);
-		formData.set('userId', userId);
+		formData.set('admin_id', adminId);
+		formData.set('user_id', userId);
 		formData.set('date', date);
 		formData.set('time', time);
 		fetch('/api/add-reservation', {
@@ -134,6 +152,14 @@ function addReservation() {
 				}
 		);
 	}
+}
+
+function showPopup() {
+	popupOverlay.style.display = "block";
+}
+function hidePopup(event) {
+	popupOverlay.style.display = "none";
+	event.preventDefault();
 }
 </script>
 

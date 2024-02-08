@@ -13,14 +13,14 @@ class TimeTableApiController extends Controller
     public function addReservation(AddReservationRequest $request)
     {        
         $data = $request->validated();
-        $name = User::find($data['userId'])->name;
+        $name = User::find($data['user_id'])->name;
 
         $date = Carbon::parse($data['date'])->format('Y-m-d');
         $time = $data['time'] . ':00';    
 
         $event = new EventModel;
-        $event->admin_id = $data['adminId'];
-        $event->user_id = $data['userId'];
+        $event->admin_id = $data['admin_id'];
+        $event->user_id = $data['user_id'];
         $event->date = $date;
         $event->time_start = $time;
         $event->duration = 3600;
@@ -35,7 +35,7 @@ class TimeTableApiController extends Controller
 
     public function getTable(Request $request)
     {        
-        $admin = User::find($_GET['adminId']);
+        $admin = User::find($_GET['admin_id']);
         if ($_GET['date'] == 'today') {
             $date = Carbon::now()->format('Y-m-d');
         } else {
@@ -43,10 +43,10 @@ class TimeTableApiController extends Controller
         }
         switch ($_GET['typeTable']) {
             case 'week':
-                $table = (new TimeTableViewController)->createWeekTable($admin, $date, $_GET['userId']);
+                $table = (new TimeTableViewController)->createWeekTable($admin, $date, $_GET['user_id']);
                 break;
             case 'day':
-                $table = (new TimeTableViewController)->createDayTable($admin, $date, $_GET['userId']);
+                $table = (new TimeTableViewController)->createDayTable($admin, $date, $_GET['user_id']);
                 break;
         }
 

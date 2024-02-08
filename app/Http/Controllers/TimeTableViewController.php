@@ -94,7 +94,7 @@ class TimeTableViewController extends Controller
     }
 
     // надо сделать метод для dataArray и dataArrayForBody
-    private function createWeekTableHead($date, $adminId, $userId)
+    private function createWeekTableHead($date, $admin_id, $user_id)
     {
         $monday = (Carbon::parse($date))->startOfWeek()->format('Y-m-d');
         $dateFromMonday = Carbon::parse($monday);
@@ -120,7 +120,7 @@ class TimeTableViewController extends Controller
           $dateFromMonday->next('Sunday')->format('d.m.Y'),
         ];
         $dateForTable = (Carbon::parse($date))->isToday() ? 'today' : $date;
-        $result = "<table data-date='" . $dateForTable . "' data-admin-id='" . $adminId . "' data-user-id='" . $userId .  "' class='week-table'><thead><tr><td></td>";
+        $result = "<table data-date='" . $dateForTable . "' data-admin-id='" . $admin_id . "' data-user-id='" . $user_id .  "' class='week-table'><thead><tr><td></td>";
         foreach ($dataArray as $weekDay) {
             $result .= "<td><span class='border'>" . $weekDay . '</span></td>';
         }
@@ -128,9 +128,9 @@ class TimeTableViewController extends Controller
         return [ 'head' => $result, 'days' => $dataArrayForBody];
     }
 
-    private function createDayTableHead($date, $adminId, $userId)
+    private function createDayTableHead($date, $admin_id, $user_id)
     {
-        $result = "<table data-date='" . $date . "' data-admin-id='" . $adminId . "' data-user-id='" . $userId .  "' class='day-table'><thead><tr><td><span class='border'>Время</span></td><td><span class='border'>Человек</span></td></tr></thead>";
+        $result = "<table data-date='" . $date . "' data-admin-id='" . $admin_id . "' data-user-id='" . $user_id .  "' class='day-table'><thead><tr><td><span class='border'>Время</span></td><td><span class='border'>Человек</span></td></tr></thead>";
         return $result;
     }
 

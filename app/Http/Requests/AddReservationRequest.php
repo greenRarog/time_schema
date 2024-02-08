@@ -24,8 +24,8 @@ class AddReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'adminId' => 'required',
-            'userId' => 'required',
+            'admin_id' => 'required',
+            'user_id' => 'required',
             'date' => 'required',
             'time' => 'required',
         ];
@@ -34,8 +34,8 @@ class AddReservationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'adminId.required' => 'не передали админа',
-            'userId.required' => 'не передали пользователя',
+            'admin_id.required' => 'не передали админа',
+            'user_id.required' => 'не передали пользователя',
             'date.required' => 'не передали дату',
             'time.required' => 'не передали время',
         ];
